@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Home</title>
+
+    <th:block th:replace="~{fragments/head.html}"/>
+</head>
+<body id="wrapper" class="bg-body container-fluid no-overflow">
+    <div th:replace="~{fragments/navbar.html :: navbar}"></div>
+
+    <div class="row">
+        <div th:replace="~{fragments/sidebar.html :: categoryList}"></div>
+
+        <div class="col-md-9 ml-sm-auto col-lg-10 px-md-4 bg-body-secondary">
+            <h1 th:text="*{cart.getItems().size()}"></h1>
+
+            <p class="h2 text-muted">Here are our products</p>
+
+            <div class="d-flex flex-wrap m-3">
+                <div th:each="a : ${articles}" class="w-25 m-2 p-2 border-black product" style="max-width: 15%;">
+                    <div th:replace="~{fragments/item.html :: item (article = *{a})}"></div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>

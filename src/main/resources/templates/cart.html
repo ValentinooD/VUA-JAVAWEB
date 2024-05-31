@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Cart</title>
+
+    <th:block th:replace="~{fragments/head.html}"/>
+</head>
+<body id="wrapper" class="bg-body">
+    <div th:replace="~{fragments/navbar.html :: navbar}"></div>
+
+    <div class="bg-body-secondary m-4 p-2">
+        <p class="h2 text-muted">Cart:</p>
+
+        <div class="d-flex flex-column m-3">
+            <table class="table">
+                <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">Image</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Amount</th>
+                        <th scope="col">Price</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr th:each="a : ${cart.getItems()}" th:article-id="*{a.getArticle().getId()}" th:price="*{a.getArticle().getPrice()}">
+                        <td>
+                            <img src="/img/no_image.png" th:if="${a.getArticle().getBase64Image().isEmpty()}"/>
+                            <img th:src="${a.getArticle().getBase64Image()}"  th:if="${!a.getArticle().getBase64Image().isEmpty()}"/>
+                        </td>
+
+                        <td><span th:text="*{a.getArticle().getName()}"></span></td>
+                        <td>
+                            <div class="centered-cell amount">
+                                <button class="btn btn-outline-danger" th:onclick="|onButtonSub(*{a.getArticle().getId()})|">-</button>
+                                <span th:text="*{a.getQuantity()}"></span>
+                                <button class="btn btn-outline-success" th:onclick="|onButtonAdd(*{a.getArticle().getId()})|">+</button>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="price centered-cell">
+                                <span th:text="*{a.getQuantity() * a.getArticle().getPrice()}"></span>
+                            </div>
+                        </td>
+
+                        <td><a href="#" class="btn btn-danger">Delete</a></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div id="payment">
+            <p>Total amount: <span id="total-amount">0</span></p>
+            <button class="btn btn-primary" onclick="onPaymentClick('cash')">Pay with cash</button>
+            <button class="btn btn-primary" onclick="onPaymentClick('paypal')">Pay with paypal</button>
+        </div>
+    </div>
+
+    <script>
+        function onPaymentClick(type) {
+            document.location.href = "/payment/" + type;
+        }
+
+        function getAmount(id) {
+            return parseInt($("tr[article-id='" + id +"']>td>.amount>span").text())
+        }
+
+        function updatePrice(id) {
+            let basePrice = parseInt( $("tr[article-id='" + id + "']").attr("price"));
+            let price = basePrice * getAmount(id);
+            $("tr[article-id='" + id +"']>td>.price>span").text(price.toLocaleString())
+        }
+
+        function calculateTotalPrice() {
+            let price = 0;
+            $("tr").each(function(i, obj) {
+                if (!obj.hasAttribute("price") || !obj.hasAttribute("article-id")) return;
+
+                price += parseInt(obj.getAttribute("price")) * getAmount(obj.getAttribute("article-id"));
+            });
+
+            $("#total-amount").text(price.toLocaleString());
+        }
+
+        function setAmount(id, amount, call=true) {
+            $("tr[article-id='" + id + "']>td>.amount>span").text(amount)
+
+            if (!call)
+                return;
+
+            $.ajax({
+                type: "POST",
+                url: "/cart/amount/" + id,
+                data: {
+                    'amount': amount
+                },
+                crossDomain: true,
+                xhrFields: {
+                    withCredentials: true
+                },
+                success: function (data, textStatus, jqXHR) {
+                    setAmount(id, amount, call=false)
+                    updatePrice(id);
+                    calculateTotalPrice();
+                },
+                error: function (data, textStatus, jqXHR) {
+                }
+            });
+        }
+
+        function onButtonAdd(id) {
+            setAmount(id, getAmount(id) + 1)
+        }
+
+        function onButtonSub(id) {
+            if (getAmount(id) <= 0) return;
+
+            setAmount(id, getAmount(id) - 1)
+        }
+
+        $(document).ready(function () {
+            $(document).ajaxSend(function(e, xhr, options) {
+                xhr.setRequestHeader("[[${_csrf.headerName}]]", "[[${_csrf.token}]]");
+            });
+
+            $("tr").each(function(i, obj) {
+                updatePrice(parseInt(obj.getAttribute("article-id")));
+            });
+            calculateTotalPrice();
+        });
+    </script>
+</body>
+</html>

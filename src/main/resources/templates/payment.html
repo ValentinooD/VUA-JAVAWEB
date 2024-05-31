@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Home</title>
+
+    <th:block th:replace="~{fragments/head.html}"/>
+
+    <style>
+        #title {
+            margin: auto;
+            text-align: center;
+            font-size: 28px;
+            color: #10af14;
+            font-weight: bold;
+        }
+
+        #subtitle {
+            margin: auto;
+            text-align: center;
+            font-size: 24px;
+            color: #2b2f32;
+        }
+
+        #subtitle > span {
+            color: #2c3034;
+        }
+
+    </style>
+</head>
+<body id="wrapper" class="bg-body container-fluid no-overflow">
+<div th:replace="~{fragments/navbar.html :: navbar}"></div>
+
+<div class="row">
+    <p id="title">Payment successful</p>
+    <p id="subtitle">Your order number is: #<span th:text="*{orderNum}"></span></p>
+</div>
+</body>
+</html>

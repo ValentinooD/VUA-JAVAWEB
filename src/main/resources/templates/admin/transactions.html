@@ -1,0 +1,151 @@
+<div th:fragment="transactions" xmlns:th="http://www.w3.org/1999/html">
+    <div class="p-md-3 form-row row ">
+        <form id="search-form">
+            <div class="col-sm-3">
+                <input class="form-control" type="text" name="username" id="username" placeholder="Username">
+            </div>
+        </form>
+
+    </div>
+
+
+
+    <table class="table">
+        <thead class="thead-dark">
+        <tr>
+            <th scope="col">Id</th>
+            <th scope="col">Username</th>
+            <th scope="col">Price</th>
+            <th scope="col">Payment type</th>
+            <th scope="col">Items</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:replace="~{admin/transactions :: items(transactions = ${transactions})}">
+        </tr>
+        </tbody>
+    </table>
+
+    <script>
+        function fetchItems(username = null) {
+            const formData = new FormData();
+            formData.append("username", username);
+
+            $.ajax({
+                type: "POST",
+                url: "/admin/fragment/transactions",
+                data: formData,
+                processData: false,
+                contentType: false,
+                crossDomain: true,
+                xhrFields: {
+                    withCredentials: true
+                },
+                success: function (data, textStatus, jqXHR) {
+                    $("table>tbody").html(data)
+                },
+                error: function (data, textStatus, jqXHR) {
+                    console.log(data);
+                }
+            });
+        }
+
+        function openItem(id) {
+            $("#transaction-id").text(id);
+
+            $.ajax({
+                type: "GET",
+                url: "/admin/fragment/transactions/" + id,
+                processData: false,
+                contentType: false,
+                crossDomain: true,
+                xhrFields: {
+                    withCredentials: true
+                },
+                success: function (data, textStatus, jqXHR) {
+                    $("#modalOpenItems").modal("show");
+                    $("#item-info").html(data);
+                },
+                error: function (data, textStatus, jqXHR) {
+                    console.log(data);
+                }
+            });
+        }
+    </script>
+
+    <div id="modalOpenItems" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">View transaction <span id="transaction-id"></span></h5>
+                </div>
+
+                <div id="item-info" class="modal-body">
+                    Hello hello
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+<!--/*@thymesVar id="transactions" type="java.util.List<valentinood.javaweb.domain.Transaction>"*/-->
+<th:block th:fragment="items (transactions)" >
+    <!--/*@thymesVar id="transactions" type="java.util.List<valentinood.javaweb.domain.Transaction>"*/-->
+    <th:block th:each="trans : ${transactions}">
+        <tr th:onclick="|openItem(${trans.getId()})|">
+            <td><span th:text="${trans.getId()}"></span></td>
+            <td><span th:text="${trans.getUser().getUsername()}"></span></td>
+            <td><span th:text="${trans.getPrice()}"></span></td>
+            <td><span th:text="${trans.getType()}"></span></td>
+            <td><span th:text="${trans.getItems().size()}"></span></td>
+        </tr>
+    </th:block>
+</th:block>
+
+
+<!--/*@thymesVar id="transaction" type="valentinood.javaweb.domain.Transaction"*/-->
+<th:block th:fragment="info (transaction)">
+    <dl class="row">
+        <dt class="col-sm-3">Transaction ID</dt>
+        <dd class="col-sm-9"><p th:text="${transaction.getId()}"></p></dd>
+
+        <dt class="col-sm-3">Total price:</dt>
+        <dd class="col-sm-9"><p th:text="${transaction.getPrice()}"></p></dd>
+
+        <dt class="col-sm-3">Payment method:</dt>
+        <dd class="col-sm-9"><p th:text="${transaction.getType()}"></p></dd>
+
+        <dt class="col-sm-3">Purchase time:</dt>
+        <dd class="col-sm-9"><p th:text="${transaction.getPurchaseDate().toLocaleString()}"></p></dd>
+
+        <dt class="col-sm-3">User:</dt>
+        <dd class="col-sm-9"><p th:text="${transaction.getUser().getUsername()}"></p></dd>
+
+        <dt class="col-sm-3">Items:</dt>
+        <dd class="col-sm-9">
+            <table class="table">
+                <thead class="thead-dark">
+                <tr>
+                    <th scope="col">Id</th>
+                    <th scope="col">Article</th>
+                    <th scope="col">Quantity</th>
+                </tr>
+                </thead>
+                <tbody>
+
+                <tr th:each="item : ${transaction.getItems()}">
+                    <td><span th:text="${item.getArticle().getId()}"></span></td>
+                    <td><span th:text="${item.getArticle().getName()}"></span></td>
+                    <td><span th:text="${item.getQuantity()}"></span></td>
+                </tr>
+                </tbody>
+            </table>
+        </dd>
+    </dl>
+</th:block>
+
+<th:block th:fragment="no-info">
+    <p>This transaction does not exist</p>
+</th:block>

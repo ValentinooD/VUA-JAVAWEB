@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Article</title>
+
+    <link rel="stylesheet" href="/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="/css/common.css"/>
+</head>
+<body id="wrapper" class="bg-body">
+    <div th:replace="~{fragments/navbar.html :: navbar}"></div>
+
+    <div class="bg-body-secondary m-4 p-2">
+        <p class="h2" th:text="*{article.getName()}"></p>
+        <p class="h2 text-muted mt-2" th:text="*{article.getDescription()}"></p>
+        <p class="h2 text-muted mt-2" th:text="*{article.getCategory()}"></p>
+        <p class="h2 text mt-4"><span th:text="*{article.getPrice()}"></span> euro</p>
+    </div>
+</body>
+</html>

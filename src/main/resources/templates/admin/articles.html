@@ -1,0 +1,131 @@
+<div th:fragment="articles">
+
+    <div class="p-md-3 form-row row ">
+        <div class="form-group col-md-1">
+            <button type="button" class="btn btn-primary" onclick="openModal('#modalArticleCreate')">Add</button>
+        </div>
+
+        <div class="form-group col-md-2">
+            <label for="filter-category" class="inline-block">Category</label>
+            <select id="filter-category" class="form-control inline-block">
+                <!--/*@thymesVar id="categories" type="java.util.List<valentinood.javaweb.domain.Category>"*/-->
+                <option th:each="cat : ${categories}" th:value="${cat.name}"><span th:text="${cat.name}"></span></option>
+            </select>
+        </div>
+    </div>
+
+    <table class="table">
+        <thead class="thead-dark">
+        <tr>
+            <th scope="col">Id</th>
+            <th scope="col">Image</th>
+            <th scope="col">Name</th>
+            <th scope="col">Category</th>
+            <th scope="col">Price</th>
+            <th scope="col">Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+
+            <tr th:replace="~{admin/articles :: items(articles = ${articles})}">
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- Modals -->
+    <div id="modalArticleCreate" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Create new article</h5>
+                </div>
+
+                <!--/*@thymesVar id="article" type="valentinood.javaweb.dto.ArticleDTO"*/-->
+                <form id="createArticleForm" action="admin/fragment/articles" method="post" th:object="${article}" enctype="multipart/form-data">
+                    <div class="modal-body">
+
+                        <div class="form-group">
+                            <label for="form-name">Name</label>
+                            <input id="form-name" type="text" th:field="*{name}" name="name" class="form-control" placeholder="Name"/>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="form-desc">Name</label>
+                            <textarea id="form-desc" rows="6" th:field="*{description}" name="description" class="form-control" placeholder="Description"></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="form-price">Price</label>
+                            <input min="0" step=".01" type="number" id="form-price" th:field="*{price}" name="price" class="form-control" placeholder="Price"/>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="form-category">Category</label>
+                            <select id="form-category" th:field="*{category}" name="category" class="form-control">
+                                <!--/*@thymesVar id="categories" type="java.util.List<valentinood.javaweb.domain.Category>"*/-->
+                                <option th:each="cat : ${categories}" th:value="${cat.name}"><span th:text="${cat.name}"></span></option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="form-file">Image:</label>
+                            <input id="form-file" class="form-control" type="file" name="file" accept="image/*"/>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <input type="reset" class="btn btn-secondary" data-dismiss="modal" onclick="closeModal('#modalArticleCreate')" value="Close"/>
+                        <input type="submit" class="btn btn-primary" value="Create Article"/>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $("#createArticleForm").submit(function (e) {
+            e.preventDefault();
+
+            const formData = new FormData($(this)[0]);
+            $.ajax({
+                type: "POST",
+                url: "/admin/fragment/articles",
+                data: formData,
+                processData: false,
+                contentType: false,
+                crossDomain: true,
+                xhrFields: {
+                    withCredentials: true
+                },
+                success: function (data, textStatus, jqXHR) {
+                    $("table>tbody").html(data);
+                    closeModal("#modalArticleCreate");
+                },
+                error: function (data, textStatus, jqXHR) {
+                    closeModal("#modalArticleCreate");
+                }
+            });
+        });
+    </script>
+</div>
+
+
+<!--/*@thymesVar id="a" type="valentinood.javaweb.dto.ArticleDTO"*/-->
+<!--/*@thymesVar id="articles" type="java.util.List<valentinood.javaweb.dto.ArticleDTO>"*/-->
+<tr th:fragment="items (articles)" th:each="a : ${articles}">
+    <td><span th:text="*{a.getId()}"></span></td>
+    <td class="img-cell">
+        <img src="/img/no_image.png" th:if="${a.getBase64Image().isEmpty()}"/>
+        <img th:src="${a.getBase64Image()}"  th:if="${!a.getBase64Image().isEmpty()}"/>
+    </td>
+    <td><span th:text="*{a.getName()}"></span></td>
+    <td><span th:text="*{a.getCategory()}"></span></td>
+    <td><span th:text="*{a.getPrice()}"></span></td>
+
+    <td>
+        <div class="centered-cell">
+            <a href="#" class="btn btn-warning">Edit</a>
+            <a href="#" class="btn btn-danger">Delete</a>
+        </div>
+    </td>
+</tr>

@@ -1,0 +1,33 @@
+
+<nav th:fragment="categoryList" class="sidebar col-md-3 col-lg-2 d-md-block bg-light">
+    <div class="position-sticky">
+        <ul class="nav flex-column">
+            <!--/*@thymesVar id="categories" type="java.util.List<valentinood.javaweb.domain.Category>"*/-->
+            <li th:each="cat : ${categories}" class="nav-item">
+                <a class="nav-link active" href="#" th:text="${cat.getName()}" th:title="${cat.getDescription()}"></a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<nav th:fragment="adminList" class="sidebar col-md-3 col-lg-2 d-md-block bg-light">
+    <div class="position-sticky">
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a class="nav-link active" href="#" onclick="fetchContent('home')">Home</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active" href="#" onclick="fetchContent('articles')">Articles</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active" href="#" onclick="fetchContent('categories')">Categories</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active" href="#" onclick="fetchContent('logs')">Logs</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active" href="#" onclick="fetchContent('transactions')">Transactions</a>
+            </li>
+        </ul>
+    </div>
+</nav>

@@ -1,0 +1,10 @@
+
+<div th:fragment="item (article)">
+    <p th:text="*{article.getName()}"></p>
+    <p th:text="*{article.getDescription()}"></p>
+    <p th:text="*{article.getPrice()}"></p>
+    <p th:text="*{article.getCategory()}"></p>
+
+    <a th:href="@{/cart/add/{id}(id = ${a.getId()})}" class="btn btn-primary">Add to cart</a>
+</div>
+

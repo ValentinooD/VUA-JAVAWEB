@@ -1,0 +1,30 @@
+<div th:fragment="logs">
+    <table class="table m-lg-2">
+        <thead class="thead-dark">
+        <tr>
+            <th scope="col">Username</th>
+            <th scope="col">IP</th>
+            <th scope="col">Message</th>
+            <th scope="col">Time</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        <!--/*@thymesVar id="logs" type="java.util.List<valentinood.javaweb.domain.LogEntry>"*/-->
+        <tr th:replace="~{admin/log :: log(entires = ${logs})}">
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<th:block th:fragment="log (entires)" >
+    <!--/*@thymesVar id="entires" type="java.util.List<valentinood.javaweb.domain.LogEntry>"*/-->
+    <!--/*@thymesVar id="e" type="valentinood.javaweb.domain.LogEntry"*/-->
+    <tr th:each="e : ${entires}">
+
+        <td><span th:text="*{e.getUsername()}"></span></td>
+        <td><span th:text="*{e.getIp()}"></span></td>
+        <td><span th:text="*{e.getMessage()}"></span></td>
+        <td><span th:text="*{e.getTime()}"></span></td>
+    </tr>
+</th:block>
