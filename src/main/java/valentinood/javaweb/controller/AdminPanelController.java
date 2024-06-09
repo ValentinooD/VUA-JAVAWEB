@@ -6,6 +6,7 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import valentinood.javaweb.domain.Article;
 import valentinood.javaweb.domain.Category;
 import valentinood.javaweb.domain.Transaction;
 import valentinood.javaweb.dto.ArticleDTO;
@@ -15,8 +16,11 @@ import valentinood.javaweb.service.LogService;
 import valentinood.javaweb.service.TransactionService;
 
 import java.io.IOException;
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.Base64;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,7 +47,10 @@ public class AdminPanelController {
 
     @GetMapping("/fragment/home")
     public String fragHome(Model model) {
-        model.addAttribute("msg", "Server time is " + ZonedDateTime.now());
+
+        model.addAttribute("transactions", transactionService.getTransactions().reversed().stream().limit(10).toList());
+        model.addAttribute("logs", logService.getLogs().reversed().stream().limit(10).toList());
+
         return "admin/home :: home";
     }
 
@@ -53,6 +60,22 @@ public class AdminPanelController {
         model.addAttribute("article", new ArticleDTO());
 
         return "admin/articles :: articles";
+    }
+
+    @GetMapping("/fragment/articles/{id}/modal")
+    public String fragArticlesModal(@PathVariable("id") long id, Model model) {
+        if (id != 0) {
+            Optional<Article> opt = articleService.getArticle(id);
+
+            if (opt.isPresent()) {
+                model.addAttribute("article", articleService.toArticleDTO(opt.get()));
+            } else {
+                model.addAttribute("article", new ArticleDTO());
+            }
+        } else {
+            model.addAttribute("article", new ArticleDTO());
+        }
+        return "admin/articles :: modal";
     }
 
     @PostMapping(value = "/fragment/articles", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -79,17 +102,69 @@ public class AdminPanelController {
         return "admin/articles :: items";
     }
 
+
+    @DeleteMapping("/fragment/articles/{id}")
+    public String deleteArticle(@PathVariable("id") long id, Model model) {
+        articleService.removeWithId(id);
+
+        model.addAttribute("articles", articleService.getArticles());
+        model.addAttribute("article", new ArticleDTO());
+        return "admin/articles :: items";
+    }
+
     @GetMapping("/fragment/categories")
     public String fragCategories(Model model) {
         model.addAttribute("category", new Category());
         return "admin/categories :: categories";
     }
 
-    @PostMapping("/fragment/categories")
+    @GetMapping("/fragment/categories/{id}")
+    public String fragCategory(@PathVariable("id") long id, Model model) {
+        Optional<Category> opt = categoryService.getCategory(id);
+
+        if (opt.isEmpty()) {
+            return "redirect:/admin/fragment/categories";
+        }
+
+        model.addAttribute("category", opt.get());
+        return "admin/categories :: categories";
+    }
+
+    @GetMapping("/fragment/categories/{id}/modal")
+    public String fragCategoryModal(@PathVariable("id") long id, Model model) {
+        if (id != 0) {
+            Optional<Category> opt = categoryService.getCategory(id);
+
+            if (opt.isPresent()) {
+                model.addAttribute("category", opt.get());
+            } else {
+                model.addAttribute("category", new Category());
+            }
+        } else {
+            model.addAttribute("category", new Category());
+        }
+        return "admin/categories :: modal";
+    }
+
+    @PostMapping(value = "/fragment/categories", produces = MediaType.APPLICATION_JSON_VALUE)
     public String saveCategory(@ModelAttribute Category category, Model model) {
         categoryService.save(category);
         model.addAttribute("category", new Category());
         return "admin/categories :: items";
+    }
+
+    @DeleteMapping("/fragment/categories/{id}")
+    public String deleteCategory(@PathVariable("id") long id, Model model) {
+        try {
+            categoryService.removeWithId(id);
+        } catch (Exception ex) {
+            model.addAttribute("msg", "Cannot delete this category because it has items connected to it");
+            return "admin/categories :: error";
+        }
+
+        model.addAttribute("category", new Category());
+        return "admin/categories :: items";
+
     }
 
     @GetMapping("/fragment/logs")
@@ -105,11 +180,15 @@ public class AdminPanelController {
     }
 
     @PostMapping("/fragment/transactions")
-    public String fragSearchTransactions(@ModelAttribute("username") String username, Model model) {
+    public String fragSearchTransactions(@ModelAttribute("username") String username, @ModelAttribute("afterTime") LocalDateTime afterTime, Model model) {
         List<Transaction> list = transactionService.getTransactions().reversed();
 
         if (username != null) {
             list = list.stream().filter(a -> a.getUser().getUsername().toLowerCase().contains(username.toLowerCase())).toList();
+        }
+
+        if (afterTime != null) {
+            list = list.stream().filter(a -> a.getPurchaseDate().isAfter(afterTime)).toList();
         }
 
         model.addAttribute("transactions", list);

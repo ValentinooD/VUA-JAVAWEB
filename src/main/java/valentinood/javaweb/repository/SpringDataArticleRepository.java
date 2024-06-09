@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface SpringDataArticleRepository extends JpaRepository<Article, Long> {
     List<Article> findByName(String name);
+    List<Article> findByCategory_Id(Long id);
 }

@@ -30,6 +30,7 @@ public class SecurityConfiguration implements WebMvcConfigurer {
                         .requestMatchers("/img/*").permitAll()
 
                         .requestMatchers("/").permitAll()
+                        .requestMatchers("/fragment/articles").permitAll()
                         .requestMatchers("/error").permitAll()
                         .requestMatchers("/login").permitAll()
                         .requestMatchers("/article**").permitAll()
@@ -38,11 +39,14 @@ public class SecurityConfiguration implements WebMvcConfigurer {
                         .requestMatchers("/cart/add/**").permitAll()
                         .requestMatchers("/fragment/*").permitAll()
 
+                        .requestMatchers("/user/*").authenticated()
+                        .requestMatchers("/user/**").authenticated()
                         .requestMatchers("/payment/**").authenticated()
 
                         .requestMatchers("/admin").hasRole("ADMIN")
                         .requestMatchers("/admin/*").hasRole("ADMIN")
                         .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/admin/fragment/**").hasRole("ADMIN")
 
                         .requestMatchers("/h2-console/**").permitAll()
                         .anyRequest().authenticated()

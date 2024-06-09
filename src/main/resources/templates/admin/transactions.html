@@ -1,14 +1,25 @@
 <div th:fragment="transactions" xmlns:th="http://www.w3.org/1999/html">
-    <div class="p-md-3 form-row row ">
+    <style>
+        #search-form > div {
+            display: inline-block;
+        }
+    </style>
+
+    <div id="transactions-search" class="p-md-3 form-row row">
         <form id="search-form">
             <div class="col-sm-3">
+                <label for="username">Username: </label>
                 <input class="form-control" type="text" name="username" id="username" placeholder="Username">
             </div>
+            <div class="col-sm-3">
+                <label for="afterTime">After: </label>
+                <input class="form-control" type="datetime-local" name="afterTime" id="afterTime">
+            </div>
+            <div class="col-sm-1">
+                <input class="form-control" type="submit" id="submit-search" value="Search">
+            </div>
         </form>
-
     </div>
-
-
 
     <table class="table">
         <thead class="thead-dark">
@@ -27,9 +38,11 @@
     </table>
 
     <script>
-        function fetchItems(username = null) {
+
+        function fetchItems(username = null, afterTime = null) {
             const formData = new FormData();
             formData.append("username", username);
+            formData.append("afterTime", afterTime)
 
             $.ajax({
                 type: "POST",
@@ -71,6 +84,16 @@
                 }
             });
         }
+
+        $("#search-form").submit(function (e) {
+            e.preventDefault();
+
+            const formData = new FormData($(this)[0]);
+            let username = formData.get("username");
+            let afterTime = formData.get("afterTime");
+
+            fetchItems(username, afterTime);
+        });
     </script>
 
     <div id="modalOpenItems" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-hidden="true">
@@ -118,7 +141,7 @@
         <dd class="col-sm-9"><p th:text="${transaction.getType()}"></p></dd>
 
         <dt class="col-sm-3">Purchase time:</dt>
-        <dd class="col-sm-9"><p th:text="${transaction.getPurchaseDate().toLocaleString()}"></p></dd>
+        <dd class="col-sm-9"><p th:text="${transaction.getPurchaseDate()}"></p></dd>
 
         <dt class="col-sm-3">User:</dt>
         <dd class="col-sm-9"><p th:text="${transaction.getUser().getUsername()}"></p></dd>

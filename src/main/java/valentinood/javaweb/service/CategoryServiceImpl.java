@@ -6,6 +6,7 @@ import valentinood.javaweb.domain.Category;
 import valentinood.javaweb.repository.SpringDataCategoryRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -18,6 +19,11 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    public Optional<Category> getCategory(long id) {
+        return categoryRepository.findById(id);
+    }
+
+    @Override
     public void save(Category category) {
         categoryRepository.save(category);
     }
@@ -25,5 +31,10 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public void remove(Category category) {
         categoryRepository.delete(category);
+    }
+
+    @Override
+    public void removeWithId(long id) {
+        categoryRepository.deleteById(id);
     }
 }

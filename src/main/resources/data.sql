@@ -8,14 +8,23 @@ VALUES ('Feathered bipeds', 'Animals of different sizes and ages that have two l
        ('Mollusks', 'Soft-bodied invertebrates typically with a muscular foot, a mantle, and a radula.');
 
 insert into article(name, description, price, category_id)
-VALUES ('Tesla Model Y', 'Electric car', 50000, 3),
-       ('Apartment on the main square', 'Luxury apartment', 500000, 2),
-       ('House on the beach', 'Vacation house', 5000000, 1),
-       ('Oldtimer Mercedes X 1800', 'Vintage car', 100000, 2),
-       ('Oldtimer Mercedes X 1800', 'Vintage car', 100000, 2),
-       ('Oldtimer Mercedes X 1800', 'Vintage car', 100000, 2),
-       ('Oldtimer Mercedes X 1800', 'Vintage car', 100000, 2),
-       ('Chicken chicken', 'Vintage car', 100000, 2);
+VALUES ('Ameraucana', 'This is a type of chicken that lays eggs', 130, 1),
+       ('Andalusian', 'This is a type of chicken that lays eggs. Yearly Egg Production: 100-170, Preferred Climate: Warm Climates', 120, 1),
+       ('Appenzeller', 'Another chicken - Main Use: Eggs, Temperament: Friendly, Noise Level: Loud', 80, 1),
+       ('Black Copper Marans', 'Big big chicken. Yearly Egg Production: 100-170, Egg Color: Chocolate, Docile, Quiet', 5000000, 1),
+
+       ('Monkey', 'AGOO AGOO AOHO AOHO AOHO AOHO', 600, 2),
+       ('Dog', 'WOOF WOO WFOO WOF WOO WF WOO WFOO WOFOOFOOWO', 50, 2),
+       ('Panda', 'Just sleeping', 2000, 2),
+       ('Pig', 'Gremo prsut ist', 100, 2),
+       ('Cat', 'moew moew moew moew moewm oewmo ewm oew', 100000, 2),
+
+       ('Garden lizard', 'Freshly caught', 10, 3),
+       ('Chamaleon', 'Freshly caught, it might take us some time to find it', 160, 3),
+       ('Iguana', 'Freshly caught, very big to transport', 199, 3),
+       ('Snake', 'You will have to come catch this one yourself', 299, 3),
+
+       ('Tuna', 'Rio mare', 120, 5);
 
 
 insert into users(username, password) values('admin', '$2a$10$rXrPTb.4FDjWdkTkjhXxwu1fx2ICwc/JPsLekkRRT0Rknk9tNe42O'); -- admin

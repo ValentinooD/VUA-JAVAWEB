@@ -23,7 +23,7 @@ public class AdminActionFilter implements Filter {
         }
 
         if (request.getMethod().equals("POST") && request.getServletPath().startsWith("/admin")) {
-            logService.log(request, "Action " + request.getServletPath() + " returned " + response.getStatus());
+            logService.log(request, "POST Action " + request.getServletPath() + " returned " + response.getStatus());
         }
 
         if (request.getMethod().equals("GET") && request.getServletPath().startsWith("/payment") && response.getStatus() != 200) {

@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import valentinood.javaweb.domain.Cart;
@@ -30,15 +31,6 @@ public class HomeController {
         model.addAttribute("articles", articleService.getArticles());
 
         return "home";
-    }
-
-    @GetMapping("user")
-    public String user(Model model) {
-        if (SecurityContextHolder.getContext().getAuthentication() instanceof AnonymousAuthenticationToken) {
-            return home(model);
-        }
-
-        return "user";
     }
 
     @GetMapping("error")

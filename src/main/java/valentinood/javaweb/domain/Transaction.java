@@ -3,7 +3,8 @@ package valentinood.javaweb.domain;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import java.util.Date;
+
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Setter
@@ -23,7 +24,7 @@ public class Transaction {
     private List<TransactionItem> items;
 
     @Temporal(TemporalType.TIMESTAMP)
-    private Date purchaseDate;
+    private LocalDateTime purchaseDate;
 
     private double price;
     private String type;

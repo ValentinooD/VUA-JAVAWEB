@@ -6,6 +6,8 @@ import valentinood.javaweb.domain.*;
 import valentinood.javaweb.repository.SpringDataTransactionItemRepository;
 import valentinood.javaweb.repository.SpringDataTransactionRepository;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -26,10 +28,12 @@ public class TransactionsServiceImpl implements TransactionService {
         transaction.setType(type);
         transaction.setItems(new ArrayList<>());
         transaction.setPrice(cart.getTotalPrice());
-        transaction.setPurchaseDate(new Date());
+        transaction.setPurchaseDate(LocalDateTime.now());
         transactionRepository.save(transaction);
 
         for (CartItem item : cart.getItems()) {
+            if (item.getQuantity() <= 0) continue;
+
             TransactionItem ti = new TransactionItem();
             ti.setTransaction(transaction);
             ti.setArticle(articleService.toArticle(item.getArticle()));
@@ -54,7 +58,12 @@ public class TransactionsServiceImpl implements TransactionService {
     }
 
     @Override
-    public List<Transaction> getTransactionsForUser(long id) {
-        return transactionRepository.findAllByUserId(id);
+    public List<Transaction> getTransactionsForUsername(String username) {
+        return transactionRepository.findAllByUser_Username(username);
+    }
+
+    @Override
+    public List<Transaction> getTransactionsFiltered(String username, LocalDateTime after) {
+        return List.of();
     }
 }

@@ -1,6 +1,32 @@
 <div th:fragment="home">
-    <p>Hello world from fragment home!</p>
+    <style>
+        h3 {
+            margin-top: 18px;
+        }
 
-    <p th:text="${msg}"></p>
+        #transactions-search {
+            display: none;
+        }
+
+        .fragment-container {
+            max-height: 400px;
+            overflow-y: scroll;
+            overflow-x: clip;
+        }
+    </style>
+
+    <h1>Hello, <span th:text="${user.getUsername()}"></span></h1>
+
+    <h3>Last couple of transactions: </h3>
+    <div class="fragment-container">
+        <th:block th:replace="~{admin/transactions.html :: transactions}">
+        </th:block>
+    </div>
+
+    <h3>Last couple of logs: </h3>
+    <div class="fragment-container">
+        <th:block th:replace="~{admin/log.html :: logs}">
+        </th:block>
+    </div>
 </div>
 

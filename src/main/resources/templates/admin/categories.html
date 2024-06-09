@@ -1,9 +1,12 @@
-<div th:fragment="categories">
+<div th:fragment="categories" xmlns:th="http://www.w3.org/1999/html">
 
     <div class="p-md-3">
-        <button type="button" class="btn btn-primary" onclick="openModal('#modalCreateCategory')">Add</button>
+        <button type="button" class="btn btn-primary" onclick="openCategoryModal();">Add</button>
     </div>
 
+    <div id="errors">
+
+    </div>
 
     <table class="table">
         <thead class="thead-dark">
@@ -20,6 +23,90 @@
     </table>
 
     <!-- Modals -->
+    <div id="modal-container">
+        <div th:replace="~{admin/categories :: modal}" ></div>
+    </div>
+
+    <script>
+        function openCategoryModal() {
+            $("#errors").hide();
+
+            $.ajax({
+                type: "GET",
+                url: "/admin/fragment/categories/0/modal", // 0 always returns an empty modal
+                processData: false,
+                contentType: false,
+                crossDomain: true,
+                xhrFields: {
+                    withCredentials: true
+                },
+                success: function (data, textStatus, jqXHR) {
+                    $("#modal-container").html(data);
+                    openModal('#modalCreateCategory')
+                },
+                error: function (data, textStatus, jqXHR) {
+                    closeModal('#modalCreateCategory')
+                }
+            });
+        }
+
+        function onClickEdit(id) {
+            $("#errors").hide();
+
+            $.ajax({
+                type: "GET",
+                url: "/admin/fragment/categories/" + id + "/modal",
+                processData: false,
+                contentType: false,
+                crossDomain: true,
+                xhrFields: {
+                    withCredentials: true
+                },
+                success: function (data, textStatus, jqXHR) {
+                    $("#modal-container").html(data);
+                    openModal('#modalCreateCategory')
+                },
+                error: function (data, textStatus, jqXHR) {
+                    closeModal('#modalCreateCategory')
+                }
+            });
+        }
+
+        function onClickDelete(id) {
+            $("#errors").hide();
+
+            $.ajax({
+                type: "DELETE",
+                url: "/admin/fragment/categories/" + id,
+                processData: false,
+                contentType: false,
+                crossDomain: true,
+                xhrFields: {
+                    withCredentials: true
+                },
+                success: function (data, textStatus, jqXHR) {
+                    if (data.startsWith("<tr>")) {
+                        $("table>tbody").html(data);
+                    } else {
+                        $("#errors").html(data);
+                    }
+                    closeModal('#modalCreateCategory')
+                },
+                error: function (data, textStatus, jqXHR) {
+                    closeModal('#modalCreateCategory')
+                }
+            });
+        }
+    </script>
+</div>
+
+<div th:fragment="error(msg)">
+    <div class="alert alert-danger" role="alert" th:text="${msg}">
+    </div>
+</div>
+
+
+<div th:fragment="modal">
     <div id="modalCreateCategory" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
@@ -28,8 +115,9 @@
                 </div>
 
                 <!--/*@thymesVar id="category" type="valentinood.javaweb.domain.Category"*/-->
-                <form id="createCategoryForm" action="admin/fragment/categories" method="post" th:object="${category}" enctype="multipart/form-data">
+                <form id="createCategoryForm" action="/admin/fragment/categories" method="post" th:object="${category}" enctype="multipart/form-data">
                     <div class="modal-body">
+                        <input type="hidden" name="id" th:field="*{id}" />
 
                         <div class="form-group">
                             <label for="form-name">Name</label>
@@ -68,16 +156,15 @@
                 },
                 success: function (data, textStatus, jqXHR) {
                     $("table>tbody").html(data);
-                    closeModal('#modalCreateCategory')
+                    closeModal("#modalCreateCategory");
                 },
                 error: function (data, textStatus, jqXHR) {
-                    closeModal('#modalCreateCategory')
+                    closeModal("#modalCreateCategory");
                 }
             });
         });
     </script>
 </div>
-
 
 <!--/*@thymesVar id="categories" type="java.util.List<valentinood.javaweb.domain.Category>"*/-->
 <tr th:fragment="items (categories)" th:each="cat : ${categories}">
@@ -85,8 +172,8 @@
     <td><span th:text="${cat.getName()}"></span></td>
     <td>
         <div class="centered-cell">
-            <a href="#" class="btn btn-warning">Edit</a>
-            <a href="#" class="btn btn-danger">Delete</a>
+            <a href="#" class="btn btn-warning" th:onclick="|onClickEdit(${cat.getId()})|">Edit</a>
+            <a href="#" class="btn btn-danger" th:onclick="|onClickDelete(${cat.getId()})|">Delete</a>
         </div>
     </td>
 </tr>

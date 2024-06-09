@@ -18,4 +18,10 @@ public interface ArticleService {
 
     Article toArticle(ArticleDTO dto);
     ArticleDTO toArticleDTO(Article article);
+
+    void removeWithId(long id);
+
+    Optional<Article> getArticle(long id);
+
+    List<ArticleDTO> getArticlesByCategoryId(long categoryId);
 }

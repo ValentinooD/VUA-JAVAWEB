@@ -2,12 +2,28 @@
 <nav th:fragment="categoryList" class="sidebar col-md-3 col-lg-2 d-md-block bg-light">
     <div class="position-sticky">
         <ul class="nav flex-column">
+            <li class="nav-item">
+                <p class="nav-link active" title="Display all categories" onclick="onClickOpenCategory(0)">All categories</p>
+            </li>
+
             <!--/*@thymesVar id="categories" type="java.util.List<valentinood.javaweb.domain.Category>"*/-->
             <li th:each="cat : ${categories}" class="nav-item">
-                <a class="nav-link active" href="#" th:text="${cat.getName()}" th:title="${cat.getDescription()}"></a>
+                <p class="nav-link active" th:onclick="|onClickOpenCategory(${cat.getId()})|" th:text="${cat.getName()}" th:title="${cat.getDescription()}"></p>
             </li>
         </ul>
     </div>
+
+    <script>
+        function noFunctionDefined(id) {
+            console.log("Undefined onOpenCategory function for categoryList item with id " + id);
+        }
+
+        var onOpenCategory = noFunctionDefined
+
+        function onClickOpenCategory(id) {
+            onOpenCategory(id)
+        }
+    </script>
 </nav>
 
 <nav th:fragment="adminList" class="sidebar col-md-3 col-lg-2 d-md-block bg-light">

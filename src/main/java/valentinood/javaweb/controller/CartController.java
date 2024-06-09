@@ -49,8 +49,9 @@ public class CartController {
 
     @PostMapping("/amount/{id}")
     public ResponseEntity<Integer> setAmount(@PathVariable long id, @RequestParam("amount") int amount) {
-        if (amount < 0) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        if (amount <= 0) {
+            cart.getItems().removeIf(i -> i.getArticle().getId() == id);
+            return new ResponseEntity<>(amount, HttpStatus.OK);
         }
 
         cart.getItems().stream()

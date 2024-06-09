@@ -36,7 +36,7 @@ public class ShopHandlerInterceptor implements HandlerInterceptor {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Optional<WebUser> user = webUserService.getUserByUsername(authentication.getName());
-        user.ifPresent(webUser -> modelAndView.addObject("username", webUser.getUsername()));
+        user.ifPresent(webUser -> modelAndView.addObject("user", webUser));
     }
 
     @Override

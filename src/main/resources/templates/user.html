@@ -1,20 +1,85 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
-    <title>Locked account</title>
+    <title>Home</title>
 
-    <link rel="stylesheet" href="/css/bootstrap.min.css"/>
+    <th:block th:replace="~{fragments/head.html}"/>
+
+    <style>
+        #container {
+            margin: 24px;
+        }
+
+        #title {
+            margin: 24px 24px 0;
+        }
+
+    </style>
 </head>
-<body>
+<body id="wrapper" class="bg-body container-fluid no-overflow">
+<div th:replace="~{fragments/navbar.html :: navbar}"></div>
 
-    <div class="bg-light">
-        <p class="h3">Account information</p>
+<div class="row">
+    <h2 id="title">Your previous transactions:</h2>
 
-        <p class="text-danger mb-2">Soon to be</p>
-
-        <a class="btn btn-warning" href="/logout">Logout</a>
+    <div id="container">
+        <table class="table">
+            <thead class="thead-dark">
+            <tr>
+                <th scope="col">Id</th>
+                <th scope="col">Username</th>
+                <th scope="col">Price</th>
+                <th scope="col">Payment type</th>
+                <th scope="col">Items</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:replace="~{admin/transactions :: items(transactions = ${transactions})}">
+            </tr>
+            </tbody>
+        </table>
     </div>
+
+
+    <div id="modalOpenItems" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">View transaction <span id="transaction-id"></span></h5>
+                </div>
+
+                <div id="item-info" class="modal-body">
+                    Hello hello
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function openItem(id) {
+        $("#transaction-id").text(id);
+
+        $.ajax({
+            type: "GET",
+            url: "/user/fragment/transactions/" + id,
+            processData: false,
+            contentType: false,
+            crossDomain: true,
+            xhrFields: {
+                withCredentials: true
+            },
+            success: function (data, textStatus, jqXHR) {
+                $("#modalOpenItems").modal("show");
+                $("#item-info").html(data);
+            },
+            error: function (data, textStatus, jqXHR) {
+                console.log(data);
+            }
+        });
+    }
+</script>
 
 </body>
 </html>

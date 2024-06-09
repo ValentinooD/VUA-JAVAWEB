@@ -1,16 +1,7 @@
 <div th:fragment="articles">
-
     <div class="p-md-3 form-row row ">
         <div class="form-group col-md-1">
-            <button type="button" class="btn btn-primary" onclick="openModal('#modalArticleCreate')">Add</button>
-        </div>
-
-        <div class="form-group col-md-2">
-            <label for="filter-category" class="inline-block">Category</label>
-            <select id="filter-category" class="form-control inline-block">
-                <!--/*@thymesVar id="categories" type="java.util.List<valentinood.javaweb.domain.Category>"*/-->
-                <option th:each="cat : ${categories}" th:value="${cat.name}"><span th:text="${cat.name}"></span></option>
-            </select>
+            <button type="button" class="btn btn-primary" onclick="openArticleModal();">Add</button>
         </div>
     </div>
 
@@ -33,6 +24,80 @@
     </table>
 
     <!-- Modals -->
+    <div id="modal-container">
+        <div th:replace="~{admin/articles :: modal}" ></div>
+    </div>
+
+    <script>
+        function openArticleModal() {
+            $.ajax({
+                type: "GET",
+                url: "/admin/fragment/articles/0/modal", // 0 always returns an empty modal
+                processData: false,
+                contentType: false,
+                crossDomain: true,
+                xhrFields: {
+                    withCredentials: true
+                },
+                success: function (data, textStatus, jqXHR) {
+                    console.log(data);
+                    $("#modal-container").html(data);
+                    openModal('#modalArticleCreate')
+                },
+                error: function (data, textStatus, jqXHR) {
+                    closeModal('#modalArticleCreate')
+                    console.log(data);
+                }
+            });
+        }
+
+        function onClickEdit(id) {
+            $.ajax({
+                type: "GET",
+                url: "/admin/fragment/articles/" + id + "/modal",
+                processData: false,
+                contentType: false,
+                crossDomain: true,
+                xhrFields: {
+                    withCredentials: true
+                },
+                success: function (data, textStatus, jqXHR) {
+                    $("#modal-container").html(data);
+                    openModal('#modalArticleCreate')
+                },
+                error: function (data, textStatus, jqXHR) {
+                    closeModal('#modalArticleCreate')
+                }
+            });
+        }
+
+        function onClickDelete(id) {
+            $.ajax({
+                type: "DELETE",
+                url: "/admin/fragment/articles/" + id,
+                processData: false,
+                contentType: false,
+                crossDomain: true,
+                xhrFields: {
+                    withCredentials: true
+                },
+                success: function (data, textStatus, jqXHR) {
+                    if (data.startsWith("<tr>")) {
+                        $("table>tbody").html(data);
+                    } else {
+                        $("#errors").html(data);
+                    }
+                    closeModal('#modalArticleCreate')
+                },
+                error: function (data, textStatus, jqXHR) {
+                    closeModal('#modalArticleCreate')
+                }
+            });
+        }
+    </script>
+</div>
+
+<div th:fragment="modal">
     <div id="modalArticleCreate" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
@@ -43,6 +108,7 @@
                 <!--/*@thymesVar id="article" type="valentinood.javaweb.dto.ArticleDTO"*/-->
                 <form id="createArticleForm" action="admin/fragment/articles" method="post" th:object="${article}" enctype="multipart/form-data">
                     <div class="modal-body">
+                        <input type="hidden" name="id" th:field="*{id}" />
 
                         <div class="form-group">
                             <label for="form-name">Name</label>
@@ -124,8 +190,8 @@
 
     <td>
         <div class="centered-cell">
-            <a href="#" class="btn btn-warning">Edit</a>
-            <a href="#" class="btn btn-danger">Delete</a>
+            <a href="#" class="btn btn-warning" th:onclick="|onClickEdit(${a.getId()})|">Edit</a>
+            <a href="#" class="btn btn-danger" th:onclick="|onClickDelete(${a.getId()})|">Delete</a>
         </div>
     </td>
 </tr>

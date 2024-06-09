@@ -24,6 +24,11 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
+    public List<ArticleDTO> getArticlesByCategoryId(long categoryId) {
+        return toArticleDTOList(articleRepository.findByCategory_Id(categoryId));
+    }
+
+    @Override
     public List<ArticleDTO> getArticlesByName(String articleName) {
         return toArticleDTOList(articleRepository.findByName(articleName));
     }
@@ -32,6 +37,11 @@ public class ArticleServiceImpl implements ArticleService {
     public Optional<ArticleDTO> getArticlesById(long id) {
         Optional<Article> opt =  articleRepository.findById(id);
         return opt.map(this::toArticleDTO);
+    }
+
+    @Override
+    public Optional<Article> getArticle(long id) {
+        return articleRepository.findById(id);
     }
 
     @Override
@@ -47,6 +57,11 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public void remove(ArticleDTO article) {
         articleRepository.delete(toArticle(article));
+    }
+
+    @Override
+    public void removeWithId(long id) {
+        articleRepository.deleteById(id);
     }
 
     private List<ArticleDTO> toArticleDTOList(List<Article> articles) {

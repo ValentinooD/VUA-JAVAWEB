@@ -4,17 +4,31 @@
     <meta charset="UTF-8">
     <title>Article</title>
 
-    <link rel="stylesheet" href="/css/bootstrap.min.css"/>
-    <link rel="stylesheet" href="/css/common.css"/>
+    <th:block th:replace="~{fragments/head.html}"/>
+
+    <style>
+        img {
+            width: 300px;
+            display: block;
+            margin-bottom: 16px;
+        }
+    </style>
 </head>
 <body id="wrapper" class="bg-body">
     <div th:replace="~{fragments/navbar.html :: navbar}"></div>
 
     <div class="bg-body-secondary m-4 p-2">
+        <img src="/img/no_image.png" th:if="${article.getBase64Image().isEmpty()}"/>
+        <img th:src="${article.getBase64Image()}"  th:if="${!article.getBase64Image().isEmpty()}"/>
+
         <p class="h2" th:text="*{article.getName()}"></p>
-        <p class="h2 text-muted mt-2" th:text="*{article.getDescription()}"></p>
-        <p class="h2 text-muted mt-2" th:text="*{article.getCategory()}"></p>
+        <p class="h4 text-muted mt-3" th:text="*{article.getCategory()}"></p>
+        <p class="h3 text-muted mt-3" th:text="*{article.getDescription()}"></p>
         <p class="h2 text mt-4"><span th:text="*{article.getPrice()}"></span> euro</p>
+
+        <div>
+            <a th:href="@{/cart/add/{id}(id = ${article.getId()})}" class="btn btn-primary">Add to cart</a>
+        </div>
     </div>
 </body>
 </html>

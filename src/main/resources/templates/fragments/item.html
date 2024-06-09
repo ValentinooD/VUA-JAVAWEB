@@ -1,10 +1,53 @@
 
 <div th:fragment="item (article)">
-    <p th:text="*{article.getName()}"></p>
-    <p th:text="*{article.getDescription()}"></p>
-    <p th:text="*{article.getPrice()}"></p>
-    <p th:text="*{article.getCategory()}"></p>
+    <style>
+        .top {
+            height: 230px;
 
-    <a th:href="@{/cart/add/{id}(id = ${a.getId()})}" class="btn btn-primary">Add to cart</a>
+        }
+
+        .top > img {
+            width: 80px;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .top > p {
+            text-align: center;
+            margin: 14px auto;
+        }
+
+        .bottom {
+            height: 40px;
+            margin: 14px;
+        }
+
+        .bottom > a {
+            display: block;
+            margin: 0 auto;
+        }
+    </style>
+
+    <div class="top">
+        <img src="/img/no_image.png" th:if="${article.getBase64Image().isEmpty()}"/>
+        <img th:src="${article.getBase64Image()}"  th:if="${!article.getBase64Image().isEmpty()}"/>
+
+        <p class="name"><a th:href="@{/article/{id}(id = ${a.getId()})}" class="link-info" th:text="${article.getName()}"></a></p>
+        <p class="price" th:text="${article.getPrice()}"></p>
+        <p class="category" th:text="${article.getCategory()}"></p>
+    </div>
+
+    <div class="bottom">
+        <a th:href="@{/cart/add/{id}(id = ${a.getId()})}" class="btn btn-primary">Add to cart</a>
+    </div>
+</div>
+
+
+<div th:fragment="items (articles)" th:each="a : ${articles}" class="w-25 m-2 p-2 border-black product" style="max-width: 15%;">
+    <div th:replace="~{fragments/item.html :: item(article = *{a})}"></div>
+</div>
+
+<div th:fragment="items-no-constructor" th:each="a : ${articles}" class="w-25 m-2 p-2 border-black product" style="max-width: 15%;">
+    <div th:replace="~{fragments/item.html :: item(article = *{a})}"></div>
 </div>
 

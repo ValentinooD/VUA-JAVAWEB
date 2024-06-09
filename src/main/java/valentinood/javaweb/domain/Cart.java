@@ -18,11 +18,14 @@ public class Cart {
 
     public double getTotalPrice() {
         return items.stream()
+                .filter(i -> i.getQuantity() > 0)
                 .mapToDouble(i -> i.getArticle().getPrice().doubleValue() * i.getQuantity())
                 .sum();
     }
 
     public String getDescription() {
-        return items.stream().map(i -> i.getArticle().getId() + ":" + i.getArticle().getName().toLowerCase().replace(" ", "_")).collect(Collectors.joining("\n"));
+        return items.stream()
+                .filter(i -> i.getQuantity() > 0)
+                .map(i -> i.getArticle().getId() + ":" + i.getArticle().getName().toLowerCase().replace(" ", "_")).collect(Collectors.joining("\n"));
     }
 }

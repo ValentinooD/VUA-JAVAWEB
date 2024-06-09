@@ -45,7 +45,7 @@
                             </div>
                         </td>
 
-                        <td><a href="#" class="btn btn-danger">Delete</a></td>
+                        <td><a href="#" class="btn btn-danger" th:onclick="|onButtonDelete(*{a.getArticle().getId()})|">Delete</a></td>
                     </tr>
                 </tbody>
             </table>
@@ -115,9 +115,16 @@
         }
 
         function onButtonSub(id) {
-            if (getAmount(id) <= 0) return;
+            setAmount(id, getAmount(id) - 1);
 
-            setAmount(id, getAmount(id) - 1)
+            if (getAmount(id) <= 0) {
+                $("tr[article-id='" + id + "']").remove();
+            }
+        }
+
+        function onButtonDelete(id) {
+            setAmount(id, 0);
+            $("tr[article-id='" + id + "']").remove();
         }
 
         $(document).ready(function () {
