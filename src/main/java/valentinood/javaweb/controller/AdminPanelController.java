@@ -182,14 +182,15 @@ public class AdminPanelController {
     }
 
     @PostMapping("/fragment/transactions")
-    public String fragSearchTransactions(@ModelAttribute("username") String username, @ModelAttribute("afterTime") LocalDateTime afterTime, Model model) {
+    public String fragSearchTransactions(@ModelAttribute("username") String username, @ModelAttribute("afterTime") String afterTimeStr, Model model) {
         List<Transaction> list = transactionService.getTransactions().reversed();
 
         if (username != null) {
             list = list.stream().filter(a -> a.getUser().getUsername().toLowerCase().contains(username.toLowerCase())).toList();
         }
 
-        if (afterTime != null) {
+        if (afterTimeStr != null && !afterTimeStr.isBlank()) {
+            LocalDateTime afterTime = LocalDateTime.parse(afterTimeStr);
             list = list.stream().filter(a -> a.getPurchaseDate().isAfter(afterTime)).toList();
         }
 
