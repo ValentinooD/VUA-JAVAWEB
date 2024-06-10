@@ -11,13 +11,13 @@ insert into article(name, description, price, category_id)
 VALUES ('Ameraucana', 'This is a type of chicken that lays eggs', 130, 1),
        ('Andalusian', 'This is a type of chicken that lays eggs. Yearly Egg Production: 100-170, Preferred Climate: Warm Climates', 120, 1),
        ('Appenzeller', 'Another chicken - Main Use: Eggs, Temperament: Friendly, Noise Level: Loud', 80, 1),
-       ('Black Copper Marans', 'Big big chicken. Yearly Egg Production: 100-170, Egg Color: Chocolate, Docile, Quiet', 5000000, 1),
+       ('Black Copper Marans', 'Big big chicken. Yearly Egg Production: 100-170, Egg Color: Chocolate, Docile, Quiet', 50, 1),
 
        ('Monkey', 'AGOO AGOO AOHO AOHO AOHO AOHO', 600, 2),
        ('Dog', 'WOOF WOO WFOO WOF WOO WF WOO WFOO WOFOOFOOWO', 50, 2),
        ('Panda', 'Just sleeping', 2000, 2),
        ('Pig', 'Gremo prsut ist', 100, 2),
-       ('Cat', 'moew moew moew moew moewm oewmo ewm oew', 100000, 2),
+       ('Cat', 'moew moew moew moew moewm oewmo ewm oew', 10, 2),
 
        ('Garden lizard', 'Freshly caught', 10, 3),
        ('Chamaleon', 'Freshly caught, it might take us some time to find it', 160, 3),

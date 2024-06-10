@@ -82,13 +82,15 @@ public class AdminPanelController {
     public String saveArticle(@ModelAttribute ArticleDTO article, Model model, HttpServletRequest request) {
         // Convert to base64
         try {
-            StringBuilder builder = new StringBuilder("data:");
-            builder.append(article.getFile().getContentType());
-            builder.append(";base64,");
-            String base64 = Base64.getEncoder().encodeToString(article.getFile().getBytes());
-            builder.append(base64);
+            if (article.getFile().getSize() > 0) {
+                StringBuilder builder = new StringBuilder("data:");
+                builder.append(article.getFile().getContentType());
+                builder.append(";base64,");
+                String base64 = Base64.getEncoder().encodeToString(article.getFile().getBytes());
+                builder.append(base64);
 
-            article.setBase64Image(builder.toString());
+                article.setBase64Image(builder.toString());
+            }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
