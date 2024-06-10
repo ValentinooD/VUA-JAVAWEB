@@ -88,7 +88,7 @@
                     if (data.startsWith("<tr>")) {
                         $("table>tbody").html(data);
                     } else {
-                        $("#errors").html(data);
+                        $("#errors").html(data).show();
                     }
                     closeModal('#modalCreateCategory')
                 },

@@ -38,8 +38,10 @@ public class PaymentController {
                 return "redirect:/";
             }
 
-            String cancelUrl="http://localhost:8080/payment/paypal/cancel";
-            String successUrl="http://localhost:8080/payment/paypal/success";
+            String host = request.getHeader("Host");
+
+            String cancelUrl = "http://" + host + "/payment/paypal/cancel";
+            String successUrl = "http://" + host + "/payment/paypal/success";
             Payment payment = paypalService.create(
                     cart.getTotalPrice(),
                     "EUR",
@@ -124,13 +126,11 @@ public class PaymentController {
 
     @GetMapping("/error")
     public String error() {
-        System.out.println("error");
         return "redirect:/";
     }
 
     @GetMapping("/cancel")
     public String cancel() {
-        System.out.println("cancelled");
         return "redirect:/";
     }
 }
